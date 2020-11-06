@@ -10,14 +10,14 @@
 		"Other"
 	],
 	"activationEvents": [
-        "onCommand:run-debug-protractor.helloWorld"
+        "onDebug"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "run-debug-protractor.helloWorld",
-				"title": "Hello World"
+				"command": "extension.executeProtractorTest",
+				"title": "Execute Protractor Test"
 			}
 		]
 	},
