@@ -24,7 +24,22 @@
 				"command": "extension.debugProtractorTest",
 				"title": "Debug Protractor Test"
 			}
-		]
+		],
+		"configuration": {
+			"title": "Protractor Executable Path",
+			"properties": {
+				"protractor.path": {
+					"type": "string",
+					"default": "",
+					"description": "Path to protractor executable file for tests execution."
+				},
+				"protractor.config.path": {
+					"type": "string",
+					"default": "",
+					"description": "Path to protractor configuration file to use for tests execution."
+				}
+			}
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "yarn run compile",

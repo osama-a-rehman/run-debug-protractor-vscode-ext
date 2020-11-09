@@ -1,8 +1,6 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
-import * as path from "path";
-import { getDebugConfiguration } from "./debug-config-provider";
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -15,11 +13,19 @@ export function activate(context: vscode.ExtensionContext) {
 	const isTestSetRegex = /^((\s*)(describe)(\s*)\((\s*)('|"))/g;
 	const testNameRegex = /(("|')(.*?)("|'))/;
 
+	const runCommand = "extension.runProtractorTest";
+	const debugCommand = "extension.debugProtractorTest";
+
+	const protractorPathProperty = "protractor.path";
+	const protractorConfigPathProperty = "protractor.config.path";
+
 	function provideCodeLenses(
 		document: vscode.TextDocument,
 		token: vscode.CancellationToken
 	) {
-		if (!window || !window.activeTextEditor) return;
+		if (!window || !window.activeTextEditor) {
+			return;
+		}
 
 		let matches: Match[] = [];
 		let activeDocument = window.activeTextEditor.document;
@@ -30,100 +36,91 @@ export function activate(context: vscode.ExtensionContext) {
 			if (isTestRegex.test(lineText)) {
 				const testNameMatch = lineText.match(testNameRegex);
 
-				const match: Match = {
+				const runMatch: Match = {
 					range: new vscode.Range(
 						new vscode.Position(index, 0),
 						new vscode.Position(index, 5)
 					),
+					title: isTestSetRegex.test(lineText) ? "Run tests" : "Run test",
 					testName: testNameMatch ? testNameMatch[3] : "",
 					testFile: activeDocument.fileName,
 					isTestSet: isTestSetRegex.test(lineText),
+					isDebug: false,
 				};
 
-				matches.push(match);
+				const debugMatch: Match = {
+					range: new vscode.Range(
+						new vscode.Position(index, 8),
+						new vscode.Position(index, 15)
+					),
+					title: isTestSetRegex.test(lineText) ? "Debug tests" : "Debug test",
+					testName: testNameMatch ? testNameMatch[3] : "",
+					testFile: activeDocument.fileName,
+					isTestSet: isTestSetRegex.test(lineText),
+					isDebug: true,
+				};
+
+				matches.push(runMatch);
+				matches.push(debugMatch);
 			}
 		}
-
-		// return matches
-		// 	.map(
-		// 		(match) =>
-		// 			new vscode.CodeLens(match.range, {
-		// 				title: match.isTestSet ? "Run tests" : "Run test",
-		// 				command: "extension.runProtractorTest",
-		// 				arguments: [match],
-		// 			})
-		// 	)
-		// 	.concat(
-		// 		matches.map(
-		// 			(match) =>
-		// 				new vscode.CodeLens(match.range, {
-		// 					title: match.isTestSet ? "Debug tests" : "Debug test",
-		// 					command: "extension.debugProtractorTest",
-		// 					arguments: [match],
-		// 				})
-		// 		)
-		// 	);
 
 		return matches.map(
 			(match) =>
 				new vscode.CodeLens(match.range, {
-					title: match.isTestSet ? "Debug tests" : "Debug test",
-					command: "extension.debugProtractorTest",
+					title: match.title,
+					command: match.isDebug ? debugCommand : runCommand,
 					arguments: [match],
 				})
 		);
 	}
 
 	function getProtractorConfigPath() {
-		const configuration = workspace.getConfiguration(
-			"protractor-conf-file-path"
-		);
+		return workspace.getConfiguration().get(protractorConfigPathProperty);
+	}
 
-		let protactorConfigPath = "";
-		if (
-			workspace &&
-			workspace.rootPath &&
-			configuration &&
-			configuration.protractorConfiguration
-		) {
-			protactorConfigPath = path.join(
-				workspace.rootPath,
-				configuration.protractorConfiguration
-			);
-		}
-
-		return protactorConfigPath;
+	function getProtractorPath() {
+		return workspace.getConfiguration().get(protractorPathProperty);
 	}
 
 	const runProtractorTestCommand = vscode.commands.registerCommand(
-		"extension.runProtractorTest",
+		runCommand,
 		(match) => {
 			const terminal = window.createTerminal();
 			terminal.show();
 
 			const protactorConfigPath = getProtractorConfigPath();
+			const protractorPath = getProtractorPath();
+
 			const testFile = match.testFile;
 			const testName = match.testName;
 
 			terminal.sendText(`cd "${workspace.rootPath}"`);
 			terminal.sendText(
-				`node node_modules/protractor/bin/protractor ${protactorConfigPath} --specs='${testFile}' --grep="${testName}"`
+				`node ${protractorPath} ${protactorConfigPath} --specs='${testFile}' --grep="${testName}"`
 			);
 		}
 	);
 
 	const debugProtractorTest = vscode.commands.registerCommand(
-		"extension.debugProtractorTest",
+		debugCommand,
 		(match) => {
+			const protractorConfigPath = getProtractorConfigPath();
+			const protractorPath = getProtractorPath();
+
+			const { testFile, testName } = match;
+
 			const debugConfiguration: vscode.DebugConfiguration = {
 				name: "Debug Protractor Test",
 				type: "node",
 				request: "launch",
-				program: "${workspaceFolder}/node_modules/protractor/bin/protractor",
+				program: protractorPath,
 				args: [
 					"-r",
 					"ts-node/register",
-					"${workspaceFolder}/protractor.conf.js",
+					protractorConfigPath,
+					`--spec=${testFile}`,
+					`--grep="${testName}"`,
 				],
 				sourceMaps: true,
 				protocol: "inspector",
@@ -151,4 +148,6 @@ export interface Match {
 	testName: string;
 	testFile: string;
 	isTestSet: boolean;
+	title: string;
+	isDebug: boolean;
 }
