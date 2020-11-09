@@ -106,3 +106,4 @@ dist
 # VSCode temporary directory
 .vscode
 out/
+*.vsix

@@ -3,7 +3,7 @@ const puppeteer = require("puppeteer");
 console.log(`Puppeteer path: ${puppeteer.executablePath()}`);
 
 exports.config = {
-	specs: ["example.spec.ts"],
+	specs: ["example.spec.ts", "example2.spec.ts", "example3.spec.ts"],
 	framework: "jasmine",
 	capabilities: {
 		browserName: "chrome",

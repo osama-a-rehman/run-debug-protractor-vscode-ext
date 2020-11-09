@@ -19,7 +19,7 @@ describe("Protractor Test", function () {
 		console.log("Ran Test 1");
 	});
 
-	it("Test 2 - 1", async () => {
+	it("Test 2 - 3", async () => {
 		console.log("Ran Test 2");
 	});
 

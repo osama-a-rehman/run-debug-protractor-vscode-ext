@@ -2,7 +2,7 @@
 	"name": "run-debug-protractor-tests",
 	"displayName": "Run/Debug Protractor tests",
 	"description": "An extension that allows running and debugging protractor tests both individually and collectively.",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"engines": {
 		"vscode": "^1.50.0"
 	},
@@ -14,7 +14,7 @@
 		"onLanguage:javascript"
 	],
 	"main": "./out/extension.js",
-	"publisher": "osama_a_rehman",
+	"publisher": "osama-a-rehman",
 	"contributes": {
 		"configuration": {
 			"title": "Run/Debug Protractor Config Paths",
@@ -70,9 +70,5 @@
 		"mocha": "^8.1.3",
 		"typescript": "^4.0.2",
 		"vscode-test": "^1.4.0"
-	},
-	"dependencies": {
-		"global": "^4.4.0",
-		"vsce": "^1.81.1"
 	}
 }

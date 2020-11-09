@@ -97,7 +97,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 			terminal.sendText(`cd "${workspace.rootPath}"`);
 			terminal.sendText(
-				`node ${protractorPath} ${protactorConfigPath} --specs='${testFile}' --grep="${testName}"`
+				`node ${protractorPath} ${protactorConfigPath} --specs '${testFile}' --grep="${testName}"`
 			);
 		}
 	);
@@ -119,7 +119,7 @@ export function activate(context: vscode.ExtensionContext) {
 					"-r",
 					"ts-node/register",
 					protractorConfigPath,
-					`--spec=${testFile}`,
+					`--specs ${testFile}`,
 					`--grep="${testName}"`,
 				],
 				sourceMaps: true,
