@@ -2,7 +2,7 @@
 
 An extension that allows running and debugging protractor tests both individually and collectively.
 
-![How extension provides buttons for executing protractor tests](images/usage.png)
+![How extension provides buttons for executing protractor tests](./images/usage.png)
 
 ## Extension Settings
 
