@@ -2,6 +2,7 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
 import * as path from "path";
+import { getDebugConfiguration } from "./debug-config-provider";
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -43,11 +44,31 @@ export function activate(context: vscode.ExtensionContext) {
 			}
 		}
 
+		// return matches
+		// 	.map(
+		// 		(match) =>
+		// 			new vscode.CodeLens(match.range, {
+		// 				title: match.isTestSet ? "Run tests" : "Run test",
+		// 				command: "extension.runProtractorTest",
+		// 				arguments: [match],
+		// 			})
+		// 	)
+		// 	.concat(
+		// 		matches.map(
+		// 			(match) =>
+		// 				new vscode.CodeLens(match.range, {
+		// 					title: match.isTestSet ? "Debug tests" : "Debug test",
+		// 					command: "extension.debugProtractorTest",
+		// 					arguments: [match],
+		// 				})
+		// 		)
+		// 	);
+
 		return matches.map(
 			(match) =>
 				new vscode.CodeLens(match.range, {
-					title: match.isTestSet ? "Run tests" : "Run test",
-					command: "extension.executeProtractorTest",
+					title: match.isTestSet ? "Debug tests" : "Debug test",
+					command: "extension.debugProtractorTest",
 					arguments: [match],
 				})
 		);
@@ -74,8 +95,8 @@ export function activate(context: vscode.ExtensionContext) {
 		return protactorConfigPath;
 	}
 
-	let disposable = vscode.commands.registerCommand(
-		"extension.executeProtractorTest",
+	const runProtractorTestCommand = vscode.commands.registerCommand(
+		"extension.runProtractorTest",
 		(match) => {
 			const terminal = window.createTerminal();
 			terminal.show();
@@ -84,17 +105,6 @@ export function activate(context: vscode.ExtensionContext) {
 			const testFile = match.testFile;
 			const testName = match.testName;
 
-			// const wsedit = new vscode.WorkspaceEdit();
-
-			// const wsPath = workspace.rootPath;
-			// const filePath = vscode.Uri.file(wsPath + "/.vscode/launch.json");
-			// vscode.window.showInformationMessage(filePath.toString());
-
-			// wsedit.createFile(filePath, { ignoreIfExists: true });
-
-			// vscode.workspace.applyEdit(wsedit);
-			// vscode.window.showInformationMessage("Created a new file: launch.json");
-
 			terminal.sendText(`cd "${workspace.rootPath}"`);
 			terminal.sendText(
 				`node node_modules/protractor/bin/protractor ${protactorConfigPath} --specs='${testFile}' --grep="${testName}"`
@@ -102,14 +112,26 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 	);
 
-	// let helloWorldDisposable = vscode.commands.registerCommand(
-	// 	"run-debug-protractor.helloWorld",
-	// 	() => {
-	// 		vscode.window.showInformationMessage(
-	// 			"Hello from my Protractor Extension"
-	// 		);
-	// 	}
-	// );
+	const debugProtractorTest = vscode.commands.registerCommand(
+		"extension.debugProtractorTest",
+		(match) => {
+			const debugConfiguration: vscode.DebugConfiguration = {
+				name: "Debug Protractor Test",
+				type: "node",
+				request: "launch",
+				program: "${workspaceFolder}/node_modules/protractor/bin/protractor",
+				args: [
+					"-r",
+					"ts-node/register",
+					"${workspaceFolder}/protractor.conf.js",
+				],
+				sourceMaps: true,
+				protocol: "inspector",
+			};
+
+			vscode.debug.startDebugging(undefined, debugConfiguration);
+		}
+	);
 
 	languages.forEach((language) => {
 		context.subscriptions.push(
@@ -117,8 +139,8 @@ export function activate(context: vscode.ExtensionContext) {
 		);
 	});
 
-	context.subscriptions.push(disposable);
-	// context.subscriptions.push(helloWorldDisposable);
+	context.subscriptions.push(runProtractorTestCommand);
+	context.subscriptions.push(debugProtractorTest);
 }
 
 // this method is called when your extension is deactivated

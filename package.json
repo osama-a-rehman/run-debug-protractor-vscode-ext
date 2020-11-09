@@ -16,8 +16,13 @@
 	"contributes": {
 		"commands": [
 			{
-				"command": "extension.executeProtractorTest",
-				"title": "Execute Protractor Test"
+				"command": "extension.runProtractorTest",
+				"title": "Run Protractor Test"
+			},
+
+			{
+				"command": "extension.debugProtractorTest",
+				"title": "Debug Protractor Test"
 			}
 		]
 	},
