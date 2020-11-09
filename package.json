@@ -1,8 +1,8 @@
 {
-  "name": "run-debug-protractor",
-	"displayName": "run-debug-protractor",
-	"description": "This extension can run/debug each protractor test individually",
-	"version": "0.0.1",
+	"name": "run-debug-protractor-tests",
+	"displayName": "Run/Debug Protractor tests",
+	"description": "An extension that allows running and debugging protractor tests both individually and collectively.",
+	"version": "1.0.0",
 	"engines": {
 		"vscode": "^1.50.0"
 	},
@@ -10,23 +10,14 @@
 		"Other"
 	],
 	"activationEvents": [
-        "onDebug"
+		"onLanguage:typescript",
+		"onLanguage:javascript"
 	],
 	"main": "./out/extension.js",
+	"publisher": "osama_a_rehman",
 	"contributes": {
-		"commands": [
-			{
-				"command": "extension.runProtractorTest",
-				"title": "Run Protractor Test"
-			},
-
-			{
-				"command": "extension.debugProtractorTest",
-				"title": "Debug Protractor Test"
-			}
-		],
 		"configuration": {
-			"title": "Protractor Executable Path",
+			"title": "Run/Debug Protractor Config Paths",
 			"properties": {
 				"protractor.path": {
 					"type": "string",
@@ -41,6 +32,24 @@
 			}
 		}
 	},
+	"homepage": "https://github.com/osama-a-rehman/run-debug-protractor-vscode-ext",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/osama-a-rehman/run-debug-protractor-vscode-ext.git"
+	},
+	"galleryBanner": {
+		"color": "#313131",
+		"theme": "dark"
+	},
+	"license": "MIT",
+	"icon": "protractor.ico",
+	"keywords": [
+		"protractor",
+		"test",
+		"tests",
+		"debug",
+		"run"
+	],
 	"scripts": {
 		"vscode:prepublish": "yarn run compile",
 		"compile": "tsc -p ./",
@@ -50,16 +59,20 @@
 		"test": "node ./out/test/runTest.js"
 	},
 	"devDependencies": {
-		"@types/vscode": "^1.50.0",
 		"@types/glob": "^7.1.3",
 		"@types/mocha": "^8.0.0",
 		"@types/node": "^12.11.7",
-		"eslint": "^7.9.0",
+		"@types/vscode": "^1.50.0",
 		"@typescript-eslint/eslint-plugin": "^4.1.1",
 		"@typescript-eslint/parser": "^4.1.1",
+		"eslint": "^7.9.0",
 		"glob": "^7.1.6",
 		"mocha": "^8.1.3",
 		"typescript": "^4.0.2",
 		"vscode-test": "^1.4.0"
+	},
+	"dependencies": {
+		"global": "^4.4.0",
+		"vsce": "^1.81.1"
 	}
 }

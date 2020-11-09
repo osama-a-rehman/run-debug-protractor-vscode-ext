@@ -13,8 +13,8 @@ export function activate(context: vscode.ExtensionContext) {
 	const isTestSetRegex = /^((\s*)(describe)(\s*)\((\s*)('|"))/g;
 	const testNameRegex = /(("|')(.*?)("|'))/;
 
-	const runCommand = "extension.runProtractorTest";
-	const debugCommand = "extension.debugProtractorTest";
+	const runCommand = "run_debug_protractor.runProtractorTest";
+	const debugCommand = "run_debug_protractor.debugProtractorTest";
 
 	const protractorPathProperty = "protractor.path";
 	const protractorConfigPathProperty = "protractor.config.path";
