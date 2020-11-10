@@ -1,7 +1,7 @@
 import { launch, Page } from "puppeteer";
 
 describe("Protractor Test", function () {
-	it("should open 'Google' in browser", async () => {
+	xit("should open 'Google' in browser", async () => {
 		const browser = await launch({
 			headless: false,
 		});
