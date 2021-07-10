@@ -1,0 +1,19 @@
+{
+	"name": "example-project",
+	"version": "1.0.0",
+	"description": "",
+	"main": "protractor.conf.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"jasmine": "^3.6.3",
+		"protractor": "^7.0.0"
+	},
+	"devDependencies": {
+		"@types/jasmine": "^3.6.1",
+		"ts-node": "^9.0.0"
+	}
+}
